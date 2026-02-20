@@ -24,3 +24,321 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+@keyframes scatterPulse {
+  0% {
+    transform: translate(-50%, -50%) scale(0.9);
+    opacity: 0.5;
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.1);
+    opacity: 0.85;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(0.95);
+    opacity: 0.6;
+  }
+}
+
+@keyframes scatterRay {
+  0% {
+    transform: translate(-50%, -50%) rotate(var(--angle)) scaleX(0.4);
+    opacity: 0.15;
+  }
+  50% {
+    transform: translate(-50%, -50%) rotate(var(--angle)) scaleX(1);
+    opacity: 0.85;
+  }
+  100% {
+    transform: translate(-50%, -50%) rotate(var(--angle)) scaleX(0.5);
+    opacity: 0.2;
+  }
+}
+
+.scatter-field {
+  position: absolute;
+  inset: 0;
+}
+
+.scatter-core {
+  position: absolute;
+  top: 50%;
+  left: 58%;
+  width: 18px;
+  height: 18px;
+  border-radius: 999px;
+  background: radial-gradient(circle, rgba(103, 232, 249, 0.95), rgba(15, 23, 42, 0));
+  box-shadow: 0 0 40px rgba(59, 130, 246, 0.5);
+  animation: scatterPulse 6s ease-in-out infinite;
+}
+
+.scatter-line {
+  position: absolute;
+  top: 50%;
+  left: 58%;
+  width: min(70vw, 900px);
+  height: 2px;
+  background: linear-gradient(
+    90deg,
+    rgba(59, 130, 246, 0.05),
+    rgba(56, 189, 248, 0.9),
+    rgba(168, 85, 247, 0)
+  );
+  transform-origin: left center;
+  animation: scatterRay 9s ease-in-out infinite;
+  filter: drop-shadow(0 0 12px rgba(56, 189, 248, 0.6));
+}
+
+.scatter-line:nth-child(1) {
+  --angle: 12deg;
+  animation-duration: 8s;
+}
+
+.scatter-line:nth-child(2) {
+  --angle: 38deg;
+  animation-duration: 10s;
+}
+
+.scatter-line:nth-child(3) {
+  --angle: 72deg;
+  animation-duration: 7.5s;
+}
+
+.scatter-line:nth-child(4) {
+  --angle: 108deg;
+  animation-duration: 9.5s;
+}
+
+.scatter-line:nth-child(5) {
+  --angle: 144deg;
+  animation-duration: 8.5s;
+}
+
+.scatter-line:nth-child(6) {
+  --angle: 176deg;
+  animation-duration: 10.5s;
+}
+
+.scatter-line:nth-child(7) {
+  --angle: 212deg;
+  animation-duration: 9s;
+}
+
+.scatter-line:nth-child(8) {
+  --angle: 248deg;
+  animation-duration: 8.2s;
+}
+
+.scatter-line:nth-child(9) {
+  --angle: 276deg;
+  animation-duration: 11s;
+}
+
+.scatter-line:nth-child(10) {
+  --angle: 304deg;
+  animation-duration: 7.8s;
+}
+
+.scatter-line:nth-child(11) {
+  --angle: 332deg;
+  animation-duration: 9.2s;
+}
+
+.scatter-line:nth-child(12) {
+  --angle: 356deg;
+  animation-duration: 10.2s;
+}
+
+.scatter-line:nth-child(13) {
+  --angle: 22deg;
+  animation-duration: 11.5s;
+}
+
+.scatter-line:nth-child(14) {
+  --angle: 64deg;
+  animation-duration: 8.8s;
+}
+
+.scatter-line:nth-child(15) {
+  --angle: 118deg;
+  animation-duration: 9.8s;
+}
+
+.scatter-line:nth-child(16) {
+  --angle: 168deg;
+  animation-duration: 7.6s;
+}
+
+.scatter-line:nth-child(17) {
+  --angle: 236deg;
+  animation-duration: 10.8s;
+}
+
+.scatter-line:nth-child(18) {
+  --angle: 300deg;
+  animation-duration: 8.4s;
+}
+
+@keyframes confettiBurst {
+  0% {
+    transform: translate(-50%, -50%) rotate(var(--burst-angle)) scale(0.2);
+    opacity: 0;
+  }
+  30% {
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-50%, -50%)
+      rotate(var(--burst-angle))
+      translateY(-220px)
+      scale(1);
+    opacity: 0;
+  }
+}
+
+.birthday-burst {
+  position: absolute;
+  top: 20%;
+  left: 50%;
+  width: 12px;
+  height: 12px;
+}
+
+.birthday-confetti {
+  position: absolute;
+  width: 8px;
+  height: 14px;
+  border-radius: 4px;
+  background: linear-gradient(180deg, rgba(56, 189, 248, 0.9), rgba(217, 70, 239, 0.9));
+  animation: confettiBurst 2.8s ease-out infinite;
+}
+
+.birthday-confetti:nth-child(1) {
+  --burst-angle: 0deg;
+}
+
+.birthday-confetti:nth-child(2) {
+  --burst-angle: 20deg;
+}
+
+.birthday-confetti:nth-child(3) {
+  --burst-angle: 40deg;
+}
+
+.birthday-confetti:nth-child(4) {
+  --burst-angle: 60deg;
+}
+
+.birthday-confetti:nth-child(5) {
+  --burst-angle: 80deg;
+}
+
+.birthday-confetti:nth-child(6) {
+  --burst-angle: 100deg;
+}
+
+.birthday-confetti:nth-child(7) {
+  --burst-angle: 120deg;
+}
+
+.birthday-confetti:nth-child(8) {
+  --burst-angle: 140deg;
+}
+
+.birthday-confetti:nth-child(9) {
+  --burst-angle: 160deg;
+}
+
+.birthday-confetti:nth-child(10) {
+  --burst-angle: 180deg;
+}
+
+.birthday-confetti:nth-child(11) {
+  --burst-angle: 200deg;
+}
+
+.birthday-confetti:nth-child(12) {
+  --burst-angle: 220deg;
+}
+
+.birthday-confetti:nth-child(13) {
+  --burst-angle: 240deg;
+}
+
+.birthday-confetti:nth-child(14) {
+  --burst-angle: 260deg;
+}
+
+.birthday-confetti:nth-child(15) {
+  --burst-angle: 280deg;
+}
+
+.birthday-confetti:nth-child(16) {
+  --burst-angle: 300deg;
+}
+
+.birthday-confetti:nth-child(17) {
+  --burst-angle: 320deg;
+}
+
+.birthday-confetti:nth-child(18) {
+  --burst-angle: 340deg;
+}
+
+@keyframes coinPop {
+  0% {
+    transform: translateY(18px) scale(0.5);
+    opacity: 0;
+  }
+  30% {
+    opacity: 1;
+  }
+  60% {
+    transform: translateY(-6px) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-28px) scale(0.85);
+    opacity: 0;
+  }
+}
+
+.coin-float {
+  position: relative;
+  width: 36px;
+  height: 36px;
+  margin: 0 auto;
+  border-radius: 999px;
+  background: radial-gradient(circle at 30% 30%, #fef08a, #f59e0b 60%, #b45309);
+  box-shadow: 0 0 18px rgba(250, 204, 21, 0.5);
+  animation: coinPop 2.6s ease-in-out infinite;
+}
+
+.coin-float::after {
+  content: "";
+  position: absolute;
+  inset: 6px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  opacity: 0.6;
+}
+
+.coin-inline {
+  width: 20px;
+  height: 20px;
+  border-radius: 999px;
+  background: radial-gradient(circle at 30% 30%, #fef08a, #f59e0b 60%, #b45309);
+  box-shadow: 0 0 10px rgba(250, 204, 21, 0.4);
+}
+
+.tick-mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 999px;
+  border: 1px solid rgba(56, 189, 248, 0.6);
+  color: rgba(56, 189, 248, 0.9);
+  font-size: 12px;
+}
