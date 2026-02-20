@@ -1,36 +1,130 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Intern Mentor 2026
 
-## Getting Started
+Intern Mentor 2026 is a role-based internship preparation platform built on Next.js with Google OAuth, Supabase, and Google Drive. It supports admin task management, student submissions, analytics, and LeetCode progress tracking.
 
-First, run the development server:
+**Key Features**
+- Google OAuth login with role-based access (admin vs user).
+- Admin dashboard with:
+  - Task creation (title, deadline, problem, hints) and attachments.
+  - Document uploads to Google Drive using the logged-in admin's Google Drive quota (OAuth).
+  - Submission review with approve/reject and admin remarks.
+  - User list with removal capability.
+  - Performance analytics (active users, completion rate, momentum, weekly progress).
+  - LeetCode stats by user handle (unofficial GraphQL).
+- Student dashboard with:
+  - Tasks + attachments.
+  - Answer submissions (link, text, or image upload).
+  - Submission status + admin remarks.
+  - Daily check-in + streak rewards.
+  - Learning materials list (Drive file listing).
+  - LeetCode progress + last 5 accepted.
+  - Birthday popper (date of birth required).
 
+**Tech Stack**
+- Next.js App Router
+- NextAuth (Google OAuth)
+- Supabase (DB + Storage)
+- Google Drive API
+
+---
+
+## Setup
+
+### 1) Install dependencies
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 2) Environment variables
+Create `intern_mentor/.env.local`:
+```env
+GOOGLE_CLIENT_ID=
+GOOGLE_CLIENT_SECRET=
+NEXTAUTH_URL=http://localhost:3000
+NEXTAUTH_SECRET=
+ADMIN_EMAIL_ALLOWLIST=admin@example.com,another.admin@example.com
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+SUPABASE_URL=
+SUPABASE_SERVICE_ROLE_KEY=
+SUPABASE_STORAGE_BUCKET=submission-images
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+# Drive uploads use the logged-in admin’s Google account (OAuth)
+GOOGLE_DRIVE_FOLDER_ID=
+```
 
-## Learn More
+### 3) Supabase SQL schema
+Run in Supabase SQL editor:
+```sql
+create extension if not exists "pgcrypto";
 
-To learn more about Next.js, take a look at the following resources:
+create table if not exists profiles (
+  id uuid primary key default gen_random_uuid(),
+  email text unique not null,
+  full_name text,
+  place text,
+  date_of_birth date,
+  leetcode_id text,
+  created_at timestamptz default now(),
+  updated_at timestamptz
+);
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+create table if not exists tasks (
+  id uuid primary key default gen_random_uuid(),
+  title text not null,
+  deadline date,
+  problem text not null,
+  hints text not null,
+  attachment_url text,
+  attachment_name text,
+  created_at timestamptz default now()
+);
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+create table if not exists submissions (
+  id uuid primary key default gen_random_uuid(),
+  email text not null,
+  user_name text,
+  task_id uuid,
+  answer_url text,
+  answer_text text,
+  answer_image_url text,
+  admin_remark text,
+  status text default 'pending',
+  created_at timestamptz default now()
+);
 
-## Deploy on Vercel
+create table if not exists checkins (
+  id uuid primary key default gen_random_uuid(),
+  email text not null,
+  checkin_date date not null,
+  created_at timestamptz default now(),
+  unique (email, checkin_date)
+);
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### 4) Supabase Storage
+Create a public bucket:
+```
+submission-images
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### 5) Google OAuth scope
+The app requests Drive file access so the admin can upload into their own Drive:
+```
+https://www.googleapis.com/auth/drive.file
+```
+After enabling this scope, sign out and sign back in so the token includes Drive permissions.
+
+---
+
+## Run
+```bash
+npm run dev
+```
+
+---
+
+## Notes
+- LeetCode stats use the unofficial GraphQL endpoint. This may be rate-limited or blocked by LeetCode.
+- Admin analytics are derived from check-ins and submissions.
+- If tables or buckets are missing, UI features will appear but data will not persist.
+
