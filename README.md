@@ -6,7 +6,7 @@ Intern Mentor 2026 is a role-based internship preparation platform built on Next
 - Google OAuth login with role-based access (admin vs user).
 - Admin dashboard with:
   - Task creation (title, deadline, problem, hints) and attachments.
-  - Document uploads to Google Drive using the logged-in admin's Google Drive quota (OAuth).
+  - Document uploads to Google Drive.
   - Submission review with approve/reject and admin remarks.
   - User list with removal capability.
   - Performance analytics (active users, completion rate, momentum, weekly progress).
@@ -48,9 +48,18 @@ SUPABASE_URL=
 SUPABASE_SERVICE_ROLE_KEY=
 SUPABASE_STORAGE_BUCKET=submission-images
 
-# Drive uploads use the logged-in admin’s Google account (OAuth)
+# Preferred for Vercel: paste full service account JSON as one-line string
+GOOGLE_SERVICE_ACCOUNT_KEY_JSON=
+
+# Optional fallback instead of KEY_JSON
+GOOGLE_SERVICE_ACCOUNT_EMAIL=
+GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY=
+
 GOOGLE_DRIVE_FOLDER_ID=
 ```
+
+For Vercel, do not use `GOOGLE_SERVICE_ACCOUNT_KEY_PATH` because runtime cannot access your local disk path.
+Set `GOOGLE_SERVICE_ACCOUNT_KEY_JSON` to the full service-account JSON (single-line value) in Vercel Environment Variables.
 
 ### 3) Supabase SQL schema
 Run in Supabase SQL editor:
@@ -127,4 +136,3 @@ npm run dev
 - LeetCode stats use the unofficial GraphQL endpoint. This may be rate-limited or blocked by LeetCode.
 - Admin analytics are derived from check-ins and submissions.
 - If tables or buckets are missing, UI features will appear but data will not persist.
-

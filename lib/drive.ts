@@ -12,8 +12,46 @@ type DriveFile = {
 };
 
 async function getDriveAuth() {
+  const keyJson = process.env.GOOGLE_SERVICE_ACCOUNT_KEY_JSON;
+  if (keyJson) {
+    const parsed = JSON.parse(keyJson) as {
+      client_email?: string;
+      private_key?: string;
+    };
+
+    if (!parsed.client_email || !parsed.private_key) {
+      throw new Error("Invalid GOOGLE_SERVICE_ACCOUNT_KEY_JSON.");
+    }
+
+    return new google.auth.JWT({
+      email: parsed.client_email,
+      key: parsed.private_key,
+      scopes: ["https://www.googleapis.com/auth/drive"],
+    });
+  }
+
+  const clientEmail = process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL ?? "";
+  const privateKey = (process.env.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY ?? "").replace(
+    /\\n/g,
+    "\n"
+  );
+
+  if (clientEmail && privateKey) {
+    return new google.auth.JWT({
+      email: clientEmail,
+      key: privateKey,
+      scopes: ["https://www.googleapis.com/auth/drive"],
+    });
+  }
+
   const keyPath = process.env.GOOGLE_SERVICE_ACCOUNT_KEY_PATH;
   if (keyPath) {
+    if (process.env.VERCEL) {
+      throw new Error(
+        "GOOGLE_SERVICE_ACCOUNT_KEY_PATH is not supported on Vercel. Use GOOGLE_SERVICE_ACCOUNT_KEY_JSON instead."
+      );
+    }
+
     const raw = await readFile(keyPath, "utf-8");
     const parsed = JSON.parse(raw) as {
       client_email?: string;
@@ -29,21 +67,9 @@ async function getDriveAuth() {
     });
   }
 
-  const clientEmail = process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL ?? "";
-  const privateKey = (process.env.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY ?? "").replace(
-    /\\n/g,
-    "\n"
+  throw new Error(
+    "Google Drive credentials are missing. Set GOOGLE_SERVICE_ACCOUNT_KEY_JSON or GOOGLE_SERVICE_ACCOUNT_EMAIL/GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY."
   );
-
-  if (!clientEmail || !privateKey) {
-    throw new Error("Google Drive credentials are missing.");
-  }
-
-  return new google.auth.JWT({
-    email: clientEmail,
-    key: privateKey,
-    scopes: ["https://www.googleapis.com/auth/drive"],
-  });
 }
 
 async function getDriveClient() {
